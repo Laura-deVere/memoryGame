@@ -158,6 +158,18 @@ var _Card = _interopRequireDefault(require("./Card"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function makeBoard(num) {
   var iconsLength = _icons.default.length;
   var app = document.getElementById("app");
@@ -184,34 +196,54 @@ function makeBoard(num) {
       cards.push(newCard);
     }
 
-    for (var _i2 = 0; _i2 < cards.length; _i2++) {
+    appendCardsToDOM(cards);
+    return cards;
+  }
+
+  function appendCardsToDOM(cards) {
+    cards = randomize(cards);
+    console.log(cards);
+
+    for (var i = 0; i < cards.length; i++) {
       var el = document.createElement("li");
       el.classList.add("card");
       var cover = document.createElement("div");
       var back = document.createElement("div");
-      cover.classList.add("back", "lni", "".concat(_icons.default[_i2]));
+      cover.classList.add("back", "lni", cards[i].className);
       back.classList.add("cover");
       board.appendChild(el);
       el.appendChild(cover);
       el.appendChild(back);
     }
-
-    return cards;
   }
 
   function getRandomNumber() {
     var memo = {};
-    return function getNum(iconsLength) {
-      var num = Math.floor(Math.random() * Math.floor(iconsLength));
-      console.log(memo);
+    return function getNum(length) {
+      var num = Math.floor(Math.random() * Math.floor(length));
 
       if (!memo[num]) {
         memo[num] = true;
         return num;
       } else {
-        return getNum(iconsLength);
+        return getNum(length);
       }
     };
+  }
+
+  function randomize(arr) {
+    var startLength = arr.length - 1;
+    var counter = 0;
+
+    while (counter < startLength) {
+      console.log(counter, "counter", startLength, "startLength");
+      var random = Math.floor(Math.random() * Math.floor(startLength - 1));
+      var element = arr.splice(random, 1);
+      arr.push.apply(arr, _toConsumableArray(element));
+      counter++;
+    }
+
+    return arr;
   }
 
   return makeCards(num);
@@ -239,7 +271,7 @@ var gameSate = {
   cards: [],
   start: function start() {
     console.log("started");
-    this.cards = (0, _Board.default)(4);
+    this.cards = (0, _Board.default)(8);
   }
 };
 var _default = gameSate;
@@ -290,7 +322,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53597" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54231" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -25,32 +25,50 @@ function makeBoard(num) {
       cards.push(newCard);
     }
 
+    appendCardsToDOM(cards);
+    return cards;
+  }
+
+  function appendCardsToDOM(cards) {
+    cards = randomize(cards);
+    console.log(cards);
     for (let i = 0; i < cards.length; i++) {
       let el = document.createElement("li");
       el.classList.add("card");
       let cover = document.createElement("div");
       let back = document.createElement("div");
-      cover.classList.add("back", "lni", `${icons[i]}`);
+      cover.classList.add("back", "lni", cards[i].className);
       back.classList.add("cover");
       board.appendChild(el);
       el.appendChild(cover);
       el.appendChild(back);
     }
-    return cards;
   }
 
   function getRandomNumber() {
     const memo = {};
-    return function getNum(iconsLength) {
-      let num = Math.floor(Math.random() * Math.floor(iconsLength));
-      console.log(memo);
+    return function getNum(length) {
+      let num = Math.floor(Math.random() * Math.floor(length));
       if (!memo[num]) {
         memo[num] = true;
         return num;
       } else {
-        return getNum(iconsLength);
+        return getNum(length);
       }
     };
+  }
+
+  function randomize(arr) {
+    let startLength = arr.length - 1;
+    let counter = 0;
+    while (counter < startLength) {
+      console.log(counter, "counter", startLength, "startLength");
+      let random = Math.floor(Math.random() * Math.floor(startLength - 1));
+      let element = arr.splice(random, 1);
+      arr.push(...element);
+      counter++;
+    }
+    return arr;
   }
 
   return makeCards(num);

@@ -8,7 +8,7 @@ const gameSate = {
   cards: [],
   start() {
     console.log("started");
-    this.cards = board(4);
+    this.cards = board(8);
   },
 };
 
