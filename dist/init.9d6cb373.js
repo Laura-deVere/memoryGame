@@ -117,17 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"gameState.js":[function(require,module,exports) {
-var gameSate = {
-  score: 0,
-  cardFlips: 0,
-  time: 0,
-  level: 1,
-  start: function start() {
-    console.log("started");
-  }
-};
-},{}],"icons.js":[function(require,module,exports) {
+})({"icons.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -137,43 +127,127 @@ exports.default = void 0;
 var icons = ["lni-island", "lni-juice", "lni-invention", "lni-infinite", "lni-leaf", "lni-magnet", "lni-map-marker", "lni-mashroom", "lni-microphone", "lni-microscope", "lni-mouse", "lni-snapchat", "lni-sketch", "lni-eraser", "lni-alarm-clock", "lni-baloon", "lni-bolt-alt", "lni-bricks", "lni-bridge", "lni-briefcase", "lni-brush", "lni-brush-alt", "lni-bug", "lni-bulb", "lni-bullhorn", "lni-burger", "lni-bus", "lni-cake", "lni-camera", "lni-candy", "lni-cloud", "lni-cloudy-sun", "lni-coffee-cup", "lni-compass", "lni-cup", "lni-cut", "lni-drop", "lni-diamond", "lni-dinner", "lni-flower", "lni-graduation", "lni-hand", "lni-heart", "lni-heart-filled", "lni-hand", "lni-home", "lni-hospital"];
 var _default = icons;
 exports.default = _default;
+},{}],"Card.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+function Card(id, pair, className) {
+  this.id = id; //   this.pos = pos;
+
+  this.pair = pair;
+  this.className = className;
+}
+
+var _default = Card;
+exports.default = _default;
 },{}],"Board.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = makeBoard;
+exports.default = void 0;
 
 var _icons = _interopRequireDefault(require("./icons"));
+
+var _Card = _interopRequireDefault(require("./Card"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function makeBoard(num) {
+  var iconsLength = _icons.default.length;
   var app = document.getElementById("app");
   var board = document.createElement("ul");
   board.classList.add("board");
   app.appendChild(board);
-  console.log(_icons.default);
 
-  for (var i = 0; i < _icons.default.length; i++) {
-    var el = document.createElement("li");
-    el.classList.add("card");
-    var cover = document.createElement("div");
-    var back = document.createElement("div");
-    cover.classList.add("back", "lni", "".concat(_icons.default[i]));
-    back.classList.add("cover");
-    board.appendChild(el);
-    el.appendChild(cover);
-    el.appendChild(back);
+  function makeCards(num) {
+    var cards = [];
+    var getNumber = getRandomNumber();
+    var newCard;
+
+    for (var i = 1; i <= num / 2; i++) {
+      var getCardName = getNumber(iconsLength);
+      newCard = new _Card.default(i, 0, _icons.default[getCardName]);
+      cards.push(newCard);
+    }
+
+    var cardsLength = cards.length;
+
+    for (var _i = 0; _i < cardsLength; _i++) {
+      cards[_i].pair = cardsLength + _i;
+      newCard = new _Card.default(cardsLength + _i, _i + 1, cards[_i].className);
+      cards.push(newCard);
+    }
+
+    for (var _i2 = 0; _i2 < cards.length; _i2++) {
+      var el = document.createElement("li");
+      el.classList.add("card");
+      var cover = document.createElement("div");
+      var back = document.createElement("div");
+      cover.classList.add("back", "lni", "".concat(_icons.default[_i2]));
+      back.classList.add("cover");
+      board.appendChild(el);
+      el.appendChild(cover);
+      el.appendChild(back);
+    }
+
+    return cards;
   }
+
+  function getRandomNumber() {
+    var memo = {};
+    return function getNum(iconsLength) {
+      var num = Math.floor(Math.random() * Math.floor(iconsLength));
+      console.log(memo);
+
+      if (!memo[num]) {
+        memo[num] = true;
+        return num;
+      } else {
+        return getNum(iconsLength);
+      }
+    };
+  }
+
+  return makeCards(num);
 }
-},{"./icons":"icons.js"}],"init.js":[function(require,module,exports) {
+
+var _default = makeBoard;
+exports.default = _default;
+},{"./icons":"icons.js","./Card":"Card.js"}],"gameState.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _Board = _interopRequireDefault(require("./Board"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var gameSate = {
+  score: 0,
+  cardFlips: 0,
+  time: 0,
+  level: 1,
+  cards: [],
+  start: function start() {
+    console.log("started");
+    this.cards = (0, _Board.default)(4);
+  }
+};
+var _default = gameSate;
+exports.default = _default;
+},{"./Board":"Board.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 var _gameState = _interopRequireDefault(require("./gameState"));
-
-var _Board = _interopRequireDefault(require("./Board"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -185,9 +259,10 @@ startBTN.addEventListener("click", function () {
 function init() {
   console.log("start");
   startBTN.remove();
-  (0, _Board.default)(4);
+
+  _gameState.default.start();
 }
-},{"./gameState":"gameState.js","./Board":"Board.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./gameState":"gameState.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -215,7 +290,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59837" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53597" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

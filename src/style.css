@@ -22,7 +22,6 @@ body {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  list-style: none;
 }
 
 .card {
@@ -54,7 +53,4 @@ body {
   border: 1px solid white;
 }
 
-
-
-
-/*# sourceMappingURL=/style.78032849.css.map */
+/*# sourceMappingURL=style.css.map */

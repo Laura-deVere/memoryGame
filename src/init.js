@@ -1,5 +1,4 @@
 import game from "./gameState";
-import board from "./Board";
 
 const startBTN = document.getElementById("game-start");
 startBTN.addEventListener("click", function () {
@@ -8,5 +7,5 @@ startBTN.addEventListener("click", function () {
 function init() {
   console.log("start");
   startBTN.remove();
-  board(4);
+  game.start();
 }
