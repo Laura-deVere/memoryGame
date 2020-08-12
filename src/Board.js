@@ -2,13 +2,13 @@ import icons from "./icons";
 import Card from "./Card";
 
 function makeBoard(num) {
-  const iconsLength = icons.length;
   const app = document.getElementById("app");
   const board = document.createElement("ul");
   board.classList.add("board");
   app.appendChild(board);
 
   function makeCards(num) {
+    const iconsLength = icons.length;
     const cards = [];
     const getNumber = getRandomNumber();
     let newCard;
@@ -35,10 +35,14 @@ function makeBoard(num) {
     for (let i = 0; i < cards.length; i++) {
       let el = document.createElement("li");
       el.classList.add("card");
+      el.setAttribute("id", `card-${i}`);
       let cover = document.createElement("div");
       let back = document.createElement("div");
-      cover.classList.add("back", "lni", cards[i].className);
-      back.classList.add("cover");
+      cover.classList.add("cover");
+      cover.innerHTML = "Cover";
+      cover.setAttribute("id", `card-${cards[i].id}${cards[i].id}${i}-front`);
+      back.classList.add("back", "lni", cards[i].className, "flip-card-back");
+      back.setAttribute("id", `card-${cards[i].id}${cards[i].id}${i}-back`);
       board.appendChild(el);
       el.appendChild(cover);
       el.appendChild(back);

@@ -136,8 +136,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 function Card(id, pair, className) {
-  this.id = id; //   this.pos = pos;
-
+  this.id = id;
   this.pair = pair;
   this.className = className;
 }
@@ -171,13 +170,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function makeBoard(num) {
-  var iconsLength = _icons.default.length;
   var app = document.getElementById("app");
   var board = document.createElement("ul");
   board.classList.add("board");
   app.appendChild(board);
 
   function makeCards(num) {
+    var iconsLength = _icons.default.length;
     var cards = [];
     var getNumber = getRandomNumber();
     var newCard;
@@ -207,10 +206,14 @@ function makeBoard(num) {
     for (var i = 0; i < cards.length; i++) {
       var el = document.createElement("li");
       el.classList.add("card");
+      el.setAttribute("id", "card-".concat(i));
       var cover = document.createElement("div");
       var back = document.createElement("div");
-      cover.classList.add("back", "lni", cards[i].className);
-      back.classList.add("cover");
+      cover.classList.add("cover");
+      cover.innerHTML = "Cover";
+      cover.setAttribute("id", "card-".concat(cards[i].id).concat(cards[i].id).concat(i, "-front"));
+      back.classList.add("back", "lni", cards[i].className, "flip-card-back");
+      back.setAttribute("id", "card-".concat(cards[i].id).concat(cards[i].id).concat(i, "-back"));
       board.appendChild(el);
       el.appendChild(cover);
       el.appendChild(back);
@@ -251,7 +254,47 @@ function makeBoard(num) {
 
 var _default = makeBoard;
 exports.default = _default;
-},{"./icons":"icons.js","./Card":"Card.js"}],"gameState.js":[function(require,module,exports) {
+},{"./icons":"icons.js","./Card":"Card.js"}],"UI.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var UI = {
+  createGameStateUI: function createGameStateUI() {},
+  addUIEventListeners: function addUIEventListeners() {
+    var _this = this;
+
+    var cards = document.querySelectorAll(".card");
+    cards.forEach(function (element) {
+      element.addEventListener("click", function (event) {
+        console.log(element.id);
+
+        _this.triggerCardFlip(event.target.id);
+      });
+    });
+  },
+  triggerCardFlip: function triggerCardFlip(id) {
+    var selectedCard = document.getElementById(id); // const children = selectedCard.children;
+
+    console.log(selectedCard.nextElementSibling); // selectedCard.classList.add("flip-card-cover");
+    // // selectedCard.nextSibling.classList.add("lip-card-back");
+
+    var flip = selectedCard.nextSibling;
+    flip.classList.toggle("flip-card-back");
+    setTimeout(function () {
+      flip.classList.toggle("flip-card-back");
+    }, 3000);
+  },
+  getCurrentCards: function getCurrentCards() {}
+};
+var _default = UI; // UI should register each card click
+// UI should find both cards with turned class and return their ids and pair
+// UI should trigger card flip animation
+
+exports.default = _default;
+},{}],"gameState.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -260,6 +303,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _Board = _interopRequireDefault(require("./Board"));
+
+var _UI = _interopRequireDefault(require("./UI"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -271,12 +316,17 @@ var gameSate = {
   cards: [],
   start: function start() {
     console.log("started");
-    this.cards = (0, _Board.default)(8);
+    this.cards = (0, _Board.default)(6);
+
+    _UI.default.addUIEventListeners();
+  },
+  updateCardFlips: function updateCardFlips() {
+    this.cardFlips++;
   }
 };
 var _default = gameSate;
 exports.default = _default;
-},{"./Board":"Board.js"}],"init.js":[function(require,module,exports) {
+},{"./Board":"Board.js","./UI":"UI.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 var _gameState = _interopRequireDefault(require("./gameState"));
@@ -322,7 +372,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54231" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56410" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

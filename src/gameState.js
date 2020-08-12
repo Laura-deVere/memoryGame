@@ -1,4 +1,5 @@
 import board from "./Board";
+import UI from "./UI";
 
 const gameSate = {
   score: 0,
@@ -8,7 +9,11 @@ const gameSate = {
   cards: [],
   start() {
     console.log("started");
-    this.cards = board(8);
+    this.cards = board(6);
+    UI.addUIEventListeners();
+  },
+  updateCardFlips() {
+    this.cardFlips++;
   },
 };
 
