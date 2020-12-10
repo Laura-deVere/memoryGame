@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./css/style.css" />
-    <title>Match</title>
-  </head>
-  <body>
-    <div id="app">
-      <div id="game-state">
-        <div>Score: <span id="score">0</span></div>
-        <div>Card flips: <span id="card-flips">0</span></div>
-        <div>Time Left: <span id="time-left">0</span></div>
-        <div>Level: <span id="level">1</span></div>
-      </div>
-      <button id="game-start">Start!</button>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <title>Match</title>
+</head>
+
+<body>
+  <div id="app">
+    <div id="game-state">
+      <div>Score: <span id="score">0</span></div>
+      <div>Card flips: <span id="card-flips">0</span></div>
+      <div id="time-left">Time Left: <span id="mins-left">00</span><span id="secs-left">00</span></div>
+      <div>Level: <span id="level">1</span></div>
+      <button id="game-reset">Reset Game</button>
     </div>
-    <script src="./init.js"></script>
-  </body>
+    <button id="game-start">Start!</button>
+  </div>
+  <script src="./init.js"></script>
+</body>
+
 </html>

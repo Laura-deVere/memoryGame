@@ -1,3 +1,5 @@
+import GameState from './gameState';
+
 const UI = {
   flippedCards: [],
   currentCardToMatch: null,
@@ -6,6 +8,9 @@ const UI = {
 
   addUIEventListeners() {
     const cards = document.querySelectorAll(".card");
+    const resetButton = document.getElementById('game-reset');
+
+    // Cards
     cards.forEach((element) => {
       element.addEventListener("click", (event) => {
         if (this.cardFlippedCount < 2) {
@@ -14,6 +19,12 @@ const UI = {
         }
       });
     });
+
+    // Reset Button
+    resetButton.addEventListener('click', (event) => {
+      GameState.resetGame()
+    });
+
   },
 
   updateCardFlippedCount() {

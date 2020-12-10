@@ -1,16 +1,28 @@
-import board from "./Board";
+import Board from "./Board";
+import CountdownTimer from './CountdownTimer';
 import UI from "./UI";
 
-const gameSate = {
+const GameSate = {
   score: 0,
-  time: 0,
+  timer: null,
   level: 1,
-  cards: [],
+  game: null,
   start() {
-    console.log("started");
-    this.cards = board(6);
+    console.log("Game started!");
+    this.game = new Board(12);
     UI.addUIEventListeners();
+    this.initTimer();
+  },
+  resetGame() {
+    this.timer.clearCountdown();
+    this.timer = null;
+    this.score = 0;
+    this.level = 1;
+  },
+  initTimer() {
+    this.timer = CountdownTimer();
+    this.timer.countdown();
   },
 };
 
-export default gameSate;
+export default GameSate;

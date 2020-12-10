@@ -169,7 +169,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function makeBoard(num) {
+function Board(num) {
   var app = document.getElementById("app");
   var board = document.createElement("ul");
   board.classList.add("board");
@@ -254,15 +254,106 @@ function makeBoard(num) {
   return makeCards(num);
 }
 
-var _default = makeBoard;
+var _default = Board;
 exports.default = _default;
-},{"./icons":"icons.js","./Card":"Card.js"}],"UI.js":[function(require,module,exports) {
+},{"./icons":"icons.js","./Card":"Card.js"}],"CountdownTimer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+function CountdownTimer() {
+  var mins = 2; //calculate the seconds 
+
+  var secs = mins * 60; //countdown function is evoked when page is loaded 
+
+  var countdown = function countdown() {
+    return setTimeout(decrement, 60);
+  }; // countdown is cleared
+
+
+  function clearCountdown() {
+    mins = 0;
+    secs = 0;
+    return 0;
+  } //Decrement function decrement the value. 
+
+
+  function decrement() {
+    var minutes, seconds;
+
+    if (document.getElementById) {
+      minutes = document.getElementById("mins-left");
+      seconds = document.getElementById("secs-left"); //if less than a minute remaining 
+      //Display only seconds value. 
+
+      if (seconds < 59) {
+        seconds.textContent = secs;
+      } //Display both minutes and seconds 
+      //getminutes and getseconds is used to 
+      //get minutes and seconds 
+      else {
+          minutes.textContent = getminutes();
+          seconds.textContent = getseconds();
+        } //when less than a minute remaining 
+      //colour of the minutes and seconds 
+      //changes to red 
+
+
+      if (mins < 1) {
+        minutes.style.color = "red";
+        seconds.style.color = "red";
+      } //if seconds becomes zero, 
+      //then page alert time up 
+
+
+      if (mins < 0) {
+        alert('time up');
+        minutes.textContent = 0;
+        seconds.textContent = 0;
+      } //if seconds > 0 then seconds is decremented 
+      else {
+          secs--;
+          setTimeout(decrement, 1000);
+        }
+    }
+  }
+
+  function getminutes() {
+    //minutes is seconds divided by 60, rounded down 
+    mins = Math.floor(secs / 60);
+    return mins;
+  }
+
+  function getseconds() {
+    //take minutes remaining (as seconds) away  
+    //from total seconds remaining 
+    return secs - Math.round(mins * 60);
+  }
+
+  var publicFunctions = {
+    countdown: countdown,
+    clearCountdown: clearCountdown
+  };
+  return publicFunctions;
+}
+
+var _default = CountdownTimer;
+exports.default = _default;
+},{}],"UI.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _gameState = _interopRequireDefault(require("./gameState"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var UI = {
   flippedCards: [],
   currentCardToMatch: null,
@@ -272,6 +363,8 @@ var UI = {
     var _this = this;
 
     var cards = document.querySelectorAll(".card");
+    var resetButton = document.getElementById('game-reset'); // Cards
+
     cards.forEach(function (element) {
       element.addEventListener("click", function (event) {
         if (_this.cardFlippedCount < 2) {
@@ -280,6 +373,10 @@ var UI = {
           _this.handleCardClick(element, event.target.id);
         }
       });
+    }); // Reset Button
+
+    resetButton.addEventListener('click', function (event) {
+      _gameState.default.resetGame();
     });
   },
   updateCardFlippedCount: function updateCardFlippedCount() {
@@ -338,7 +435,7 @@ var UI = {
 };
 var _default = UI;
 exports.default = _default;
-},{}],"gameState.js":[function(require,module,exports) {
+},{"./gameState":"gameState.js"}],"gameState.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -348,25 +445,39 @@ exports.default = void 0;
 
 var _Board = _interopRequireDefault(require("./Board"));
 
+var _CountdownTimer = _interopRequireDefault(require("./CountdownTimer"));
+
 var _UI = _interopRequireDefault(require("./UI"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var gameSate = {
+var GameSate = {
   score: 0,
-  time: 0,
+  timer: null,
   level: 1,
-  cards: [],
+  game: null,
   start: function start() {
-    console.log("started");
-    this.cards = (0, _Board.default)(6);
+    console.log("Game started!");
+    this.game = new _Board.default(12);
 
     _UI.default.addUIEventListeners();
+
+    this.initTimer();
+  },
+  resetGame: function resetGame() {
+    this.timer.clearCountdown();
+    this.timer = null;
+    this.score = 0;
+    this.level = 1;
+  },
+  initTimer: function initTimer() {
+    this.timer = (0, _CountdownTimer.default)();
+    this.timer.countdown();
   }
 };
-var _default = gameSate;
+var _default = GameSate;
 exports.default = _default;
-},{"./Board":"Board.js","./UI":"UI.js"}],"init.js":[function(require,module,exports) {
+},{"./Board":"Board.js","./CountdownTimer":"CountdownTimer.js","./UI":"UI.js"}],"init.js":[function(require,module,exports) {
 "use strict";
 
 var _gameState = _interopRequireDefault(require("./gameState"));
@@ -412,7 +523,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59247" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53481" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

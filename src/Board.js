@@ -1,7 +1,7 @@
 import icons from "./icons";
 import Card from "./Card";
 
-function makeBoard(num) {
+function Board(num) {
   const app = document.getElementById("app");
   const board = document.createElement("ul");
   board.classList.add("board");
@@ -80,4 +80,4 @@ function makeBoard(num) {
   return makeCards(num);
 }
 
-export default makeBoard;
+export default Board;
