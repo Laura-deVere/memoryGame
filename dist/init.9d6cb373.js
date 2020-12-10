@@ -187,11 +187,12 @@ function makeBoard(num) {
       cards.push(newCard);
     }
 
+    console.log(cards);
     var cardsLength = cards.length;
 
     for (var _i = 0; _i < cardsLength; _i++) {
-      cards[_i].pair = cardsLength + _i;
-      newCard = new _Card.default(cardsLength + _i, _i + 1, cards[_i].className);
+      cards[_i].pair = num / 2 + 1 + _i;
+      newCard = new _Card.default(num / 2 + 1 + _i, _i + 1, cards[_i].className);
       cards.push(newCard);
     }
 
@@ -206,7 +207,8 @@ function makeBoard(num) {
     for (var i = 0; i < cards.length; i++) {
       var el = document.createElement("li");
       el.classList.add("card");
-      el.setAttribute("id", "card-".concat(i));
+      el.setAttribute("id", "card-".concat(cards[i].id));
+      el.setAttribute('data-match', "card-".concat(cards[i].pair));
       var cover = document.createElement("div");
       var back = document.createElement("div");
       cover.classList.add("cover");
@@ -262,37 +264,79 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var UI = {
-  createGameStateUI: function createGameStateUI() {},
+  flippedCards: [],
+  currentCardToMatch: null,
+  cardFlippedCount: 0,
+  totalCardsFlippedCount: 0,
   addUIEventListeners: function addUIEventListeners() {
     var _this = this;
 
     var cards = document.querySelectorAll(".card");
     cards.forEach(function (element) {
       element.addEventListener("click", function (event) {
-        console.log(element.id);
+        if (_this.cardFlippedCount < 2) {
+          _this.updateCardFlippedCount();
 
-        _this.triggerCardFlip(event.target.id);
+          _this.handleCardClick(element, event.target.id);
+        }
       });
     });
   },
+  updateCardFlippedCount: function updateCardFlippedCount() {
+    this.cardFlippedCount++;
+    this.updateTotalCardsFlippedCount();
+  },
+  updateTotalCardsFlippedCount: function updateTotalCardsFlippedCount() {
+    this.totalCardsFlippedCount++;
+    var el = document.getElementById('card-flips');
+    el.textContent = this.totalCardsFlippedCount;
+  },
+  handleCardClick: function handleCardClick(element, targetId) {
+    var currentCard = {
+      id: element.id,
+      match: element.getAttribute('data-match'),
+      boardId: targetId
+    };
+
+    if (!this.currentCardToMatch) {
+      this.currentCardToMatch = currentCard;
+    } else {
+      this.checkIfCardMatched(currentCard);
+    }
+
+    this.triggerCardFlip(targetId);
+  },
+  checkIfCardMatched: function checkIfCardMatched(card) {
+    var cardIds = [card.id, this.currentCardToMatch.id];
+    var boardIds = [card.boardId, this.currentCardToMatch.boardId];
+
+    if (this.currentCardToMatch.id === card.match) {
+      this.flippedCards.push([].concat(cardIds));
+    } else {
+      this.triggerCardTurn(boardIds);
+    }
+
+    this.clearCurrentCardToMatch();
+  },
+  clearCurrentCardToMatch: function clearCurrentCardToMatch() {
+    this.currentCardToMatch = null;
+    this.cardFlippedCount = 0;
+  },
   triggerCardFlip: function triggerCardFlip(id) {
-    var selectedCard = document.getElementById(id); // const children = selectedCard.children;
-
-    console.log(selectedCard.nextElementSibling); // selectedCard.classList.add("flip-card-cover");
-    // // selectedCard.nextSibling.classList.add("lip-card-back");
-
+    var selectedCard = document.getElementById(id);
     var flip = selectedCard.nextSibling;
     flip.classList.toggle("flip-card-back");
-    setTimeout(function () {
-      flip.classList.toggle("flip-card-back");
-    }, 3000);
   },
-  getCurrentCards: function getCurrentCards() {}
+  triggerCardTurn: function triggerCardTurn(cards) {
+    setTimeout(function () {
+      cards.forEach(function (card) {
+        var current = document.getElementById(card).nextSibling;
+        current.classList.toggle("flip-card-back");
+      });
+    }, 1000);
+  }
 };
-var _default = UI; // UI should register each card click
-// UI should find both cards with turned class and return their ids and pair
-// UI should trigger card flip animation
-
+var _default = UI;
 exports.default = _default;
 },{}],"gameState.js":[function(require,module,exports) {
 "use strict";
@@ -310,7 +354,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var gameSate = {
   score: 0,
-  cardFlips: 0,
   time: 0,
   level: 1,
   cards: [],
@@ -319,9 +362,6 @@ var gameSate = {
     this.cards = (0, _Board.default)(6);
 
     _UI.default.addUIEventListeners();
-  },
-  updateCardFlips: function updateCardFlips() {
-    this.cardFlips++;
   }
 };
 var _default = gameSate;
@@ -372,7 +412,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56410" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59247" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

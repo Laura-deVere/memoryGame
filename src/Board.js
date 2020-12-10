@@ -18,10 +18,11 @@ function makeBoard(num) {
       newCard = new Card(i, 0, icons[getCardName]);
       cards.push(newCard);
     }
+    console.log(cards)
     let cardsLength = cards.length;
     for (let i = 0; i < cardsLength; i++) {
-      cards[i].pair = cardsLength + i;
-      newCard = new Card(cardsLength + i, i + 1, cards[i].className);
+      cards[i].pair = (num / 2 + 1) + i;
+      newCard = new Card((num / 2 + 1) + i, i + 1, cards[i].className);
       cards.push(newCard);
     }
 
@@ -35,7 +36,8 @@ function makeBoard(num) {
     for (let i = 0; i < cards.length; i++) {
       let el = document.createElement("li");
       el.classList.add("card");
-      el.setAttribute("id", `card-${i}`);
+      el.setAttribute("id", `card-${cards[i].id}`);
+      el.setAttribute('data-match', `card-${cards[i].pair}`)
       let cover = document.createElement("div");
       let back = document.createElement("div");
       cover.classList.add("cover");
