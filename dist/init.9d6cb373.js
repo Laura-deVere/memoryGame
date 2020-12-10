@@ -171,11 +171,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 function Board(num) {
   var app = document.getElementById("app");
-  var board = document.createElement("ul");
+  var board = document.getElementById("board");
   board.classList.add("board");
   app.appendChild(board);
 
+  function makeBoard() {}
+
+  function clearCards(board) {
+    while (board.firstChild) {
+      board.removeChild(board.firstChild);
+    }
+  }
+
   function makeCards(num) {
+    console.log(board.children.length);
+
+    if (board.children.length > 0) {
+      clearCards(board);
+    }
+
     var iconsLength = _icons.default.length;
     var cards = [];
     var getNumber = getRandomNumber();
@@ -310,7 +324,7 @@ function CountdownTimer() {
 
 
       if (mins < 0) {
-        alert('time up');
+        // alert('time up');
         minutes.textContent = 0;
         seconds.textContent = 0;
       } //if seconds > 0 then seconds is decremented 
@@ -367,6 +381,8 @@ var UI = {
 
     cards.forEach(function (element) {
       element.addEventListener("click", function (event) {
+        console.log(_this.cardFlippedCount);
+
         if (_this.cardFlippedCount < 2) {
           _this.updateCardFlippedCount();
 
@@ -409,11 +425,10 @@ var UI = {
 
     if (this.currentCardToMatch.id === card.match) {
       this.flippedCards.push([].concat(cardIds));
+      this.clearCurrentCardToMatch();
     } else {
       this.triggerCardTurn(boardIds);
     }
-
-    this.clearCurrentCardToMatch();
   },
   clearCurrentCardToMatch: function clearCurrentCardToMatch() {
     this.currentCardToMatch = null;
@@ -425,11 +440,13 @@ var UI = {
     flip.classList.toggle("flip-card-back");
   },
   triggerCardTurn: function triggerCardTurn(cards) {
+    var callback = this.clearCurrentCardToMatch.bind(this);
     setTimeout(function () {
       cards.forEach(function (card) {
         var current = document.getElementById(card).nextSibling;
         current.classList.toggle("flip-card-back");
       });
+      callback();
     }, 1000);
   }
 };
@@ -458,7 +475,7 @@ var GameSate = {
   game: null,
   start: function start() {
     console.log("Game started!");
-    this.game = new _Board.default(12);
+    this.game = new _Board.default(6);
 
     _UI.default.addUIEventListeners();
 
@@ -466,9 +483,10 @@ var GameSate = {
   },
   resetGame: function resetGame() {
     this.timer.clearCountdown();
-    this.timer = null;
+    this.game = new _Board.default(6);
     this.score = 0;
     this.level = 1;
+    this.initTimer();
   },
   initTimer: function initTimer() {
     this.timer = (0, _CountdownTimer.default)();
@@ -523,7 +541,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53481" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63116" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

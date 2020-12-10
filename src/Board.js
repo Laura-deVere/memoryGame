@@ -3,11 +3,24 @@ import Card from "./Card";
 
 function Board(num) {
   const app = document.getElementById("app");
-  const board = document.createElement("ul");
+  const board = document.getElementById("board");
   board.classList.add("board");
   app.appendChild(board);
 
+  function makeBoard() {
+
+  }
+  function clearCards(board) {
+    while (board.firstChild) {
+      board.removeChild(board.firstChild);
+    }
+  }
+
   function makeCards(num) {
+    console.log(board.children.length)
+    if (board.children.length > 0) {
+      clearCards(board);
+    }
     const iconsLength = icons.length;
     const cards = [];
     const getNumber = getRandomNumber();

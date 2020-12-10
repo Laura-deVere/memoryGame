@@ -9,15 +9,16 @@ const GameSate = {
   game: null,
   start() {
     console.log("Game started!");
-    this.game = new Board(12);
+    this.game = new Board(6);
     UI.addUIEventListeners();
     this.initTimer();
   },
   resetGame() {
     this.timer.clearCountdown();
-    this.timer = null;
+    this.game = new Board(6);
     this.score = 0;
     this.level = 1;
+    this.initTimer();
   },
   initTimer() {
     this.timer = CountdownTimer();

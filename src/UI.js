@@ -13,6 +13,7 @@ const UI = {
     // Cards
     cards.forEach((element) => {
       element.addEventListener("click", (event) => {
+        console.log(this.cardFlippedCount)
         if (this.cardFlippedCount < 2) {
           this.updateCardFlippedCount();
           this.handleCardClick(element, event.target.id);
@@ -57,10 +58,10 @@ const UI = {
     const boardIds = [card.boardId, this.currentCardToMatch.boardId];
     if (this.currentCardToMatch.id === card.match) {
       this.flippedCards.push([...cardIds]);
+      this.clearCurrentCardToMatch();
     } else {
       this.triggerCardTurn(boardIds);
     }
-    this.clearCurrentCardToMatch();
   },
 
   clearCurrentCardToMatch() {
@@ -75,13 +76,14 @@ const UI = {
   },
 
   triggerCardTurn(cards) {
+    const callback = this.clearCurrentCardToMatch.bind(this);
     setTimeout(function () {
       cards.forEach(card => {
         let current = document.getElementById(card).nextSibling;
         current.classList.toggle("flip-card-back");
       });
+      callback();
     }, 1000);
-
   }
 };
 

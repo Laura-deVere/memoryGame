@@ -44,7 +44,7 @@ function CountdownTimer() {
             //if seconds becomes zero, 
             //then page alert time up 
             if (mins < 0) {
-                alert('time up');
+                // alert('time up');
                 minutes.textContent = 0;
                 seconds.textContent = 0;
             }
