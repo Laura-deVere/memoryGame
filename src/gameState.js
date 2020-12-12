@@ -18,12 +18,21 @@ const GameSate = {
     this.game = new Board(6);
     this.score = 0;
     this.level = 1;
+    this.updateGameOnWin(0);
     this.initTimer();
   },
   initTimer() {
     this.timer = CountdownTimer();
     this.timer.countdown();
   },
+  updateGameOnWin(numOfCards) {
+    this.timer.clearCountdown();
+    this.calculateScore(numOfCards)
+  },
+  calculateScore(numOfCards) {
+    let total = numOfCards * 100;
+    UI.updateScore(total);
+  }
 };
 
 export default GameSate;

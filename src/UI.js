@@ -2,6 +2,7 @@ import GameState from './gameState';
 
 const UI = {
   flippedCards: [],
+  totalCards: 0,
   currentCardToMatch: null,
   cardFlippedCount: 0,
   totalCardsFlippedCount: 0,
@@ -9,7 +10,7 @@ const UI = {
   addUIEventListeners() {
     const cards = document.querySelectorAll(".card");
     const resetButton = document.getElementById('game-reset');
-
+    this.totalCards = cards.length / 2;
     // Cards
     cards.forEach((element) => {
       element.addEventListener("click", (event) => {
@@ -59,6 +60,10 @@ const UI = {
     if (this.currentCardToMatch.id === card.match) {
       this.flippedCards.push([...cardIds]);
       this.clearCurrentCardToMatch();
+      if (this.totalCards === this.flippedCards.length) {
+        console.log('Game Won!');
+        this.handleGameWin();
+      }
     } else {
       this.triggerCardTurn(boardIds);
     }
@@ -84,6 +89,25 @@ const UI = {
       });
       callback();
     }, 1000);
+  },
+
+  handleGameWin() {
+    GameState.updateGameOnWin(this.totalCards * 2);
+    this.updateSuccessMessage(true);
+  },
+
+  updateSuccessMessage(gameWon) {
+    const message = document.getElementById('game-success');
+    if (gameWon) {
+      message.textContent = 'Yay, you won!!!';
+    } else {
+      message.textContent = "It's ok to finally, pick yourself and try again";
+    }
+  },
+
+  updateScore(score) {
+    const currentScore = document.getElementById('score');
+    currentScore.textContent = score;
   }
 };
 

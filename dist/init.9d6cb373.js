@@ -175,8 +175,6 @@ function Board(num) {
   board.classList.add("board");
   app.appendChild(board);
 
-  function makeBoard() {}
-
   function clearCards(board) {
     while (board.firstChild) {
       board.removeChild(board.firstChild);
@@ -314,12 +312,11 @@ function CountdownTimer() {
         } //when less than a minute remaining 
       //colour of the minutes and seconds 
       //changes to red 
-
-
-      if (mins < 1) {
-        minutes.style.color = "red";
-        seconds.style.color = "red";
-      } //if seconds becomes zero, 
+      // if (mins < 1) {
+      //     minutes.style.color = "red";
+      //     seconds.style.color = "red";
+      // }
+      //if seconds becomes zero, 
       //then page alert time up 
 
 
@@ -370,6 +367,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var UI = {
   flippedCards: [],
+  totalCards: 0,
   currentCardToMatch: null,
   cardFlippedCount: 0,
   totalCardsFlippedCount: 0,
@@ -377,7 +375,8 @@ var UI = {
     var _this = this;
 
     var cards = document.querySelectorAll(".card");
-    var resetButton = document.getElementById('game-reset'); // Cards
+    var resetButton = document.getElementById('game-reset');
+    this.totalCards = cards.length / 2; // Cards
 
     cards.forEach(function (element) {
       element.addEventListener("click", function (event) {
@@ -426,6 +425,11 @@ var UI = {
     if (this.currentCardToMatch.id === card.match) {
       this.flippedCards.push([].concat(cardIds));
       this.clearCurrentCardToMatch();
+
+      if (this.totalCards === this.flippedCards.length) {
+        console.log('Game Won!');
+        this.handleGameWin();
+      }
     } else {
       this.triggerCardTurn(boardIds);
     }
@@ -448,6 +452,24 @@ var UI = {
       });
       callback();
     }, 1000);
+  },
+  handleGameWin: function handleGameWin() {
+    _gameState.default.updateGameOnWin(this.totalCards * 2);
+
+    this.updateSuccessMessage(true);
+  },
+  updateSuccessMessage: function updateSuccessMessage(gameWon) {
+    var message = document.getElementById('game-success');
+
+    if (gameWon) {
+      message.textContent = 'Yay, you won!!!';
+    } else {
+      message.textContent = "It's ok to finally, pick yourself and try again";
+    }
+  },
+  updateScore: function updateScore(score) {
+    var currentScore = document.getElementById('score');
+    currentScore.textContent = score;
   }
 };
 var _default = UI;
@@ -486,11 +508,21 @@ var GameSate = {
     this.game = new _Board.default(6);
     this.score = 0;
     this.level = 1;
+    this.updateGameOnWin(0);
     this.initTimer();
   },
   initTimer: function initTimer() {
     this.timer = (0, _CountdownTimer.default)();
     this.timer.countdown();
+  },
+  updateGameOnWin: function updateGameOnWin(numOfCards) {
+    this.timer.clearCountdown();
+    this.calculateScore(numOfCards);
+  },
+  calculateScore: function calculateScore(numOfCards) {
+    var total = numOfCards * 100;
+
+    _UI.default.updateScore(total);
   }
 };
 var _default = GameSate;
@@ -541,7 +573,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63116" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59040" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -7,9 +7,6 @@ function Board(num) {
   board.classList.add("board");
   app.appendChild(board);
 
-  function makeBoard() {
-
-  }
   function clearCards(board) {
     while (board.firstChild) {
       board.removeChild(board.firstChild);

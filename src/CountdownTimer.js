@@ -37,10 +37,10 @@ function CountdownTimer() {
             //when less than a minute remaining 
             //colour of the minutes and seconds 
             //changes to red 
-            if (mins < 1) {
-                minutes.style.color = "red";
-                seconds.style.color = "red";
-            }
+            // if (mins < 1) {
+            //     minutes.style.color = "red";
+            //     seconds.style.color = "red";
+            // }
             //if seconds becomes zero, 
             //then page alert time up 
             if (mins < 0) {
