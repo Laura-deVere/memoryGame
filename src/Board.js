@@ -13,11 +13,14 @@ function Board(num) {
     }
   }
 
-  function makeCards(num) {
-    console.log(board.children.length)
+  function makeCards(level) {
+    const levels = [6, 12, 18, 24, 30, 36];
+    const num = levels[level - 1];
+
     if (board.children.length > 0) {
       clearCards(board);
     }
+
     const iconsLength = icons.length;
     const cards = [];
     const getNumber = getRandomNumber();
@@ -28,7 +31,7 @@ function Board(num) {
       newCard = new Card(i, 0, icons[getCardName]);
       cards.push(newCard);
     }
-    console.log(cards)
+    console.log('ORiginal cards length', cards);
     let cardsLength = cards.length;
     for (let i = 0; i < cardsLength; i++) {
       cards[i].pair = (num / 2 + 1) + i;
@@ -42,7 +45,6 @@ function Board(num) {
 
   function appendCardsToDOM(cards) {
     cards = randomize(cards);
-    console.log(cards);
     for (let i = 0; i < cards.length; i++) {
       let el = document.createElement("li");
       el.classList.add("card");
@@ -51,7 +53,7 @@ function Board(num) {
       let cover = document.createElement("div");
       let back = document.createElement("div");
       cover.classList.add("cover");
-      cover.innerHTML = "Cover";
+      // cover.innerHTML = "<img src='/owls.png' alt='owls'>";
       cover.setAttribute("id", `card-${cards[i].id}${cards[i].id}${i}-front`);
       back.classList.add("back", "lni", cards[i].className, "flip-card-back");
       back.setAttribute("id", `card-${cards[i].id}${cards[i].id}${i}-back`);
@@ -78,7 +80,6 @@ function Board(num) {
     let startLength = arr.length - 1;
     let counter = 0;
     while (counter < startLength) {
-      console.log(counter, "counter", startLength, "startLength");
       let random = Math.floor(Math.random() * Math.floor(startLength - 1));
       let element = arr.splice(random, 1);
       arr.push(...element);

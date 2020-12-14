@@ -3,21 +3,22 @@ import CountdownTimer from './CountdownTimer';
 import UI from "./UI";
 
 const GameSate = {
-  score: 0,
+  points: 0,
   timer: null,
-  level: 1,
+  level: 0,
   game: null,
   start() {
     console.log("Game started!");
-    this.game = new Board(6);
-    UI.addUIEventListeners();
+    this.levelUp();
     this.initTimer();
+    this.game = new Board(this.level);
+    UI.addUIEventListeners();
   },
   resetGame() {
     this.timer.clearCountdown();
-    this.game = new Board(6);
-    this.score = 0;
+    this.points = 0;
     this.level = 1;
+    this.game = new Board(this.level);
     this.updateGameOnWin(0);
     this.initTimer();
   },
@@ -27,11 +28,20 @@ const GameSate = {
   },
   updateGameOnWin(numOfCards) {
     this.timer.clearCountdown();
-    this.calculateScore(numOfCards)
+    this.calculatePoints(numOfCards);
+    this.levelUp();
+    this.game = new Board(this.level);
+    UI.addUIEventListeners();
+    UI.clearSuccessMessage();
+    this.initTimer();
   },
-  calculateScore(numOfCards) {
+  calculatePoints(numOfCards) {
     let total = numOfCards * 100;
-    UI.updateScore(total);
+    UI.updatePoints(total);
+  },
+  levelUp() {
+    this.level++;
+    UI.updateLevel(this.level);
   }
 };
 

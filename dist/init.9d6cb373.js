@@ -181,8 +181,9 @@ function Board(num) {
     }
   }
 
-  function makeCards(num) {
-    console.log(board.children.length);
+  function makeCards(level) {
+    var levels = [6, 12, 18, 24, 30, 36];
+    var num = levels[level - 1];
 
     if (board.children.length > 0) {
       clearCards(board);
@@ -199,7 +200,7 @@ function Board(num) {
       cards.push(newCard);
     }
 
-    console.log(cards);
+    console.log('ORiginal cards length', cards);
     var cardsLength = cards.length;
 
     for (var _i = 0; _i < cardsLength; _i++) {
@@ -214,7 +215,6 @@ function Board(num) {
 
   function appendCardsToDOM(cards) {
     cards = randomize(cards);
-    console.log(cards);
 
     for (var i = 0; i < cards.length; i++) {
       var el = document.createElement("li");
@@ -223,8 +223,8 @@ function Board(num) {
       el.setAttribute('data-match', "card-".concat(cards[i].pair));
       var cover = document.createElement("div");
       var back = document.createElement("div");
-      cover.classList.add("cover");
-      cover.innerHTML = "Cover";
+      cover.classList.add("cover"); // cover.innerHTML = "<img src='/owls.png' alt='owls'>";
+
       cover.setAttribute("id", "card-".concat(cards[i].id).concat(cards[i].id).concat(i, "-front"));
       back.classList.add("back", "lni", cards[i].className, "flip-card-back");
       back.setAttribute("id", "card-".concat(cards[i].id).concat(cards[i].id).concat(i, "-back"));
@@ -253,7 +253,6 @@ function Board(num) {
     var counter = 0;
 
     while (counter < startLength) {
-      console.log(counter, "counter", startLength, "startLength");
       var random = Math.floor(Math.random() * Math.floor(startLength - 1));
       var element = arr.splice(random, 1);
       arr.push.apply(arr, _toConsumableArray(element));
@@ -375,22 +374,31 @@ var UI = {
     var _this = this;
 
     var cards = document.querySelectorAll(".card");
-    var resetButton = document.getElementById('game-reset');
-    this.totalCards = cards.length / 2; // Cards
+    this.totalCards = cards.length / 2;
+    this.makeResetButton(); // Cards
 
     cards.forEach(function (element) {
       element.addEventListener("click", function (event) {
-        console.log(_this.cardFlippedCount);
-
         if (_this.cardFlippedCount < 2) {
           _this.updateCardFlippedCount();
 
           _this.handleCardClick(element, event.target.id);
         }
       });
-    }); // Reset Button
+    });
+  },
+  makeResetButton: function makeResetButton() {
+    var container = document.querySelector('.game-state');
+    var button = document.getElementById('game-reset');
 
-    resetButton.addEventListener('click', function (event) {
+    if (!button) {
+      button = document.createElement('button');
+      button.textContent = 'Reset Game';
+      button.setAttribute('id', 'game-reset');
+      container.appendChild(button);
+    }
+
+    button.addEventListener('click', function (event) {
       _gameState.default.resetGame();
     });
   },
@@ -454,9 +462,13 @@ var UI = {
     }, 1000);
   },
   handleGameWin: function handleGameWin() {
-    _gameState.default.updateGameOnWin(this.totalCards * 2);
+    var _this2 = this;
 
     this.updateSuccessMessage(true);
+    this.resetCardState();
+    setTimeout(function () {
+      _gameState.default.updateGameOnWin(_this2.totalCards * 2);
+    }, 1000);
   },
   updateSuccessMessage: function updateSuccessMessage(gameWon) {
     var message = document.getElementById('game-success');
@@ -467,9 +479,23 @@ var UI = {
       message.textContent = "It's ok to finally, pick yourself and try again";
     }
   },
-  updateScore: function updateScore(score) {
-    var currentScore = document.getElementById('score');
-    currentScore.textContent = score;
+  resetCardState: function resetCardState() {
+    this.flippedCards = [];
+    this.currentCardToMatch = null;
+    this.cardFlippedCount = 0;
+    this.totalCardsFlippedCount = 0;
+  },
+  clearSuccessMessage: function clearSuccessMessage() {
+    var message = document.getElementById('game-success');
+    message.textContent = '';
+  },
+  updatePoints: function updatePoints(points) {
+    var currentPoints = document.getElementById('points');
+    currentPoints.textContent = points;
+  },
+  updateLevel: function updateLevel(level) {
+    var container = document.getElementById('level');
+    container.textContent = level;
   }
 };
 var _default = UI;
@@ -491,23 +517,23 @@ var _UI = _interopRequireDefault(require("./UI"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var GameSate = {
-  score: 0,
+  points: 0,
   timer: null,
-  level: 1,
+  level: 0,
   game: null,
   start: function start() {
     console.log("Game started!");
-    this.game = new _Board.default(6);
+    this.levelUp();
+    this.initTimer();
+    this.game = new _Board.default(this.level);
 
     _UI.default.addUIEventListeners();
-
-    this.initTimer();
   },
   resetGame: function resetGame() {
     this.timer.clearCountdown();
-    this.game = new _Board.default(6);
-    this.score = 0;
+    this.points = 0;
     this.level = 1;
+    this.game = new _Board.default(this.level);
     this.updateGameOnWin(0);
     this.initTimer();
   },
@@ -517,12 +543,25 @@ var GameSate = {
   },
   updateGameOnWin: function updateGameOnWin(numOfCards) {
     this.timer.clearCountdown();
-    this.calculateScore(numOfCards);
+    this.calculatePoints(numOfCards);
+    this.levelUp();
+    this.game = new _Board.default(this.level);
+
+    _UI.default.addUIEventListeners();
+
+    _UI.default.clearSuccessMessage();
+
+    this.initTimer();
   },
-  calculateScore: function calculateScore(numOfCards) {
+  calculatePoints: function calculatePoints(numOfCards) {
     var total = numOfCards * 100;
 
-    _UI.default.updateScore(total);
+    _UI.default.updatePoints(total);
+  },
+  levelUp: function levelUp() {
+    this.level++;
+
+    _UI.default.updateLevel(this.level);
   }
 };
 var _default = GameSate;
@@ -573,7 +612,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59040" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54333" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,40 +1,102 @@
+$yellow: #e2c000;
+$green: #7ea575;
+$offwhite: #fbf8f8;
+$pink: #ff1493;
+
 body {
   background-color: black;
+  height: 100%;
 }
 
 #app {
-  //   background-color: aliceblue;
   width: 400px;
   height: 400px;
   margin: 0 auto;
 }
-#game-state {
-  width: 300px;
-  height: 200px;
-  color: white;
+
+button {
+  cursor: pointer;
+}
+
+.font-offwhite {
+  color: $offwhite;
+  margin: 0 2px;
+}
+
+.game-state {
+  display: flex;
+  flex-direction: column;
+  background-color: #323232;
+  width: 400px;
+  padding: 20px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 40px;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 10px;
+  h1 {
+    color: $offwhite;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+  }
+  >.content {
+    width: 100%;
+    display: flex;
+    div {
+      display: flex;
+    }
+  }
+  &--label, &--data {
+    display: block;
+    padding: 10px 0;
+  }
+  &--label {
+    color: $offwhite;
+  }
+  &--data {
+    color: $pink;
+    margin: 0 7px;
+  }
+  #game-reset {
+    background-color: $yellow;
+    border: 1px solid $yellow;
+    margin: 0 auto;
+    color: $offwhite;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 20px;
+  }
+}
+#game-success {
+  color: $green;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  width: 100%;
 }
 #game-start {
   margin: 200px auto;
   width: 100px;
   height: 50px;
   display: block;
-  background-color: #000;
-  color: #fff;
-  border-radius: 13px;
+  background-color: $green;
+  border: 1px solid $green;
+  color: $offwhite;
+  border-radius: 20px;
+  font-size: 16px;
 }
 .board {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .card {
   width: 100px;
   height: 100px;
   position: relative;
-  border: 1px solid hotpink;
   transition: transform 0.8s;
   transform-style: preserve-3d;
+  margin-bottom: 10px;
   .cover,
   .back {
   cursor: pointer;
@@ -49,12 +111,18 @@ body {
     right: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 40px;
+    border: 1px solid #ff1493;
   }
   .cover {
-    background-color: white;
+    background-color: $offwhite;
     color: black;
-    border: 1px solid black;
-    // z-index: -1000;
+    // border: 1px solid black;
+    background-image: url('owls.png');
+    background-size: cover;
   }
   .flip-card-cover,
   .flip-card-back {
@@ -62,7 +130,7 @@ body {
   }
   .back {
     background-color: black;
-    color: white;
-    border: 1px solid white;
+    color: $offwhite;
+    // border: 1px solid $offwhite;
   }
 }

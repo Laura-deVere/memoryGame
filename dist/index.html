@@ -11,12 +11,20 @@
 
 <body>
   <div id="app">
-    <div id="game-state">
-      <div>Score: <span id="score">0</span></div>
-      <div>Card flips: <span id="card-flips">0</span></div>
-      <div id="time-left">Time Left: <span id="mins-left">00</span><span id="secs-left">00</span></div>
-      <div>Level: <span id="level">1</span></div>
-      <button id="game-reset">Reset Game</button>
+    <div class="game-state">
+      <h1>Match.</h1>
+      <div class="content">
+        <div><span class="game-state--label">Points:</span> <span id="points" class="game-state--data">0</span></div>
+        <div><span class="game-state--label">Card flips:</span> <span id="card-flips" class="game-state--data">0</span>
+        </div>
+        <div id="time-left">
+          <span class="game-state--label">Time Left:</span>
+          <span id="mins-left" class="game-state--data">00</span><sup class="font-offwhite">M</sup>
+          <span id="secs-left" class="game-state--data">00</span><sup class="font-offwhite">S</sup>
+        </div>
+        <div><span class="game-state--label">Level:</span> <span id="level" class="game-state--data">0</span></div>
+      </div>
+      <!-- <button id="game-reset">Reset Game</button> -->
     </div>
     <button id="game-start">Start!</button>
     <div>

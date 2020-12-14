@@ -9,24 +9,33 @@ const UI = {
 
   addUIEventListeners() {
     const cards = document.querySelectorAll(".card");
-    const resetButton = document.getElementById('game-reset');
     this.totalCards = cards.length / 2;
+    this.makeResetButton();
     // Cards
     cards.forEach((element) => {
       element.addEventListener("click", (event) => {
-        console.log(this.cardFlippedCount)
         if (this.cardFlippedCount < 2) {
           this.updateCardFlippedCount();
           this.handleCardClick(element, event.target.id);
         }
       });
     });
+  },
 
-    // Reset Button
-    resetButton.addEventListener('click', (event) => {
+  makeResetButton() {
+    const container = document.querySelector('.game-state');
+    let button = document.getElementById('game-reset');
+
+    if (!button) {
+      button = document.createElement('button');
+      button.textContent = 'Reset Game';
+      button.setAttribute('id', 'game-reset')
+      container.appendChild(button);
+    }
+
+    button.addEventListener('click', (event) => {
       GameState.resetGame()
     });
-
   },
 
   updateCardFlippedCount() {
@@ -92,8 +101,11 @@ const UI = {
   },
 
   handleGameWin() {
-    GameState.updateGameOnWin(this.totalCards * 2);
     this.updateSuccessMessage(true);
+    this.resetCardState()
+    setTimeout(() => {
+      GameState.updateGameOnWin(this.totalCards * 2);
+    }, 1000);
   },
 
   updateSuccessMessage(gameWon) {
@@ -105,9 +117,26 @@ const UI = {
     }
   },
 
-  updateScore(score) {
-    const currentScore = document.getElementById('score');
-    currentScore.textContent = score;
+  resetCardState() {
+    this.flippedCards = [];
+    this.currentCardToMatch = null;
+    this.cardFlippedCount = 0;
+    this.totalCardsFlippedCount = 0;
+  },
+
+  clearSuccessMessage() {
+    const message = document.getElementById('game-success');
+    message.textContent = '';
+  },
+
+  updatePoints(points) {
+    const currentPoints = document.getElementById('points');
+    currentPoints.textContent = points;
+  },
+
+  updateLevel(level) {
+    const container = document.getElementById('level');
+    container.textContent = level;
   }
 };
 

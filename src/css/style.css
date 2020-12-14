@@ -1,5 +1,6 @@
 body {
   background-color: black;
+  height: 100%;
 }
 
 #app {
@@ -8,10 +9,66 @@ body {
   margin: 0 auto;
 }
 
-#game-state {
-  width: 300px;
-  height: 200px;
-  color: white;
+button {
+  cursor: pointer;
+}
+
+.font-offwhite {
+  color: #fbf8f8;
+  margin: 0 2px;
+}
+
+.game-state {
+  display: flex;
+  flex-direction: column;
+  background-color: #323232;
+  width: 400px;
+  padding: 20px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 40px;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 10px;
+}
+.game-state h1 {
+  color: #fbf8f8;
+  width: 100%;
+  text-align: center;
+  margin: 10px 0;
+}
+.game-state > .content {
+  width: 100%;
+  display: flex;
+}
+.game-state > .content div {
+  display: flex;
+}
+.game-state--label, .game-state--data {
+  display: block;
+  padding: 10px 0;
+}
+.game-state--label {
+  color: #fbf8f8;
+}
+.game-state--data {
+  color: #ff1493;
+  margin: 0 7px;
+}
+.game-state #game-reset {
+  background-color: #e2c000;
+  border: 1px solid #e2c000;
+  margin: 0 auto;
+  color: #fbf8f8;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+#game-success {
+  color: #7ea575;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  width: 100%;
 }
 
 #game-start {
@@ -19,25 +76,26 @@ body {
   width: 100px;
   height: 50px;
   display: block;
-  background-color: #000;
-  color: #fff;
-  border-radius: 13px;
+  background-color: #7ea575;
+  border: 1px solid #7ea575;
+  color: #fbf8f8;
+  border-radius: 20px;
+  font-size: 16px;
 }
 
 .board {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .card {
   width: 100px;
   height: 100px;
   position: relative;
-  border: 1px solid hotpink;
   transition: transform 0.8s;
   transform-style: preserve-3d;
+  margin-bottom: 10px;
 }
 .card .cover,
 .card .back {
@@ -53,11 +111,17 @@ body {
   right: 0;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 40px;
+  border: 1px solid #ff1493;
 }
 .card .cover {
-  background-color: white;
+  background-color: #fbf8f8;
   color: black;
-  border: 1px solid black;
+  background-image: url("owls.png");
+  background-size: cover;
 }
 .card .flip-card-cover,
 .card .flip-card-back {
@@ -65,8 +129,7 @@ body {
 }
 .card .back {
   background-color: black;
-  color: white;
-  border: 1px solid white;
+  color: #fbf8f8;
 }
 
 /*# sourceMappingURL=style.css.map */
